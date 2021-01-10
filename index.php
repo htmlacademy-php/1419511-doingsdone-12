@@ -126,6 +126,7 @@ $task_list = [
                         <?php foreach ($task_list as $key => $value) : ?>
                             <?php if ($value['completed'] && !$show_complete_tasks) {
                                 continue;
+                            } ?>
                             <tr class="tasks__item task
                                 <?php if ($value['completed']) : ?>
                                     task--completed
