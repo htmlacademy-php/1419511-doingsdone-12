@@ -1,6 +1,6 @@
 <?php
 // функция подсчета задач
-function count_task($task_arr, $name_project)
+function countTask($task_arr, $name_project)
 {
 	$count = 0;
 	foreach ($task_arr as $value) {
