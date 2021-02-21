@@ -93,13 +93,12 @@ $task_list = [
                                     <a class="main-navigation__list-item-link" href="#"><?= $project ?></a>
                                     <span class="main-navigation__list-item-count"><?= count_task($task_list, $project) ?></span>
                                 </li>
-                            <?php endforeach; ?>
+                            <?php endforeach; ?>                           
                         </ul>
                     </nav>
 
                     <a class="button button--transparent button--plus content__side-button" href="pages/form-project.html" target="project_add">Добавить проект</a>
                 </section>
-
                 <main class="content__main">
                     <h2 class="content__main-heading">Список задач</h2>
 
@@ -147,7 +146,7 @@ $task_list = [
                                 <td class="task__date"><?= $value['date']; ?></td>
                             </tr>
                         <?php endforeach; ?>
-                        <?php if ($show_complete_tasks == 1) : ?>
+                        <?php if ($show_complete_tasks == 1) : ?>                
                             <tr class="tasks__item task task--completed">
                                 <td class="task__select">
                                     <label class="checkbox task__checkbox">
