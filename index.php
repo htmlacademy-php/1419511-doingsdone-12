@@ -57,4 +57,4 @@ $username = 'Константин';
 //
 $content = include_template('main.php',['projects' => $projects, 'task_list'=> $task_list, 'show_complete_tasks' => $show_complete_tasks]);
 echo include_template('layout.php', ['title' => 'Дела в порядке', 'content' => $content]);
-?>
+
