@@ -1,6 +1,7 @@
 <?php
 
 require_once('functions.php');
+require_once('date.php');
 include('helpers.php');
 
 // показывать или нет выполненные задачи
@@ -13,25 +14,25 @@ $projects = ['Входящие', 'Учеба', 'Работа', 'Домашние
 $task_list = [
     [
         'task' => 'Собеседование в IT компании',
-        'date' => '01.12.2018',
+        'date' => '02.03.2021',
         'category' => 'Работа',
         'completed' => false
     ],
     [
         'task' => 'Выполнить тестовое задание',
-        'date' => '25.12.2018',
+        'date' => '25.01.2021',
         'category' => 'Работа',
         'completed' => false
     ],
     [
         'task' => 'Сделать задание первого раздела',
-        'date' => '21.12.2018',
+        'date' => '21.04.2021',
         'category' => 'Учеба',
         'completed' => true
     ],
     [
         'task' => 'Встреча с другом',
-        'date' => '22.12.2018',
+        'date' => '08.03.2021',
         'category' => 'Входящие',
         'completed' => false
     ],
@@ -57,4 +58,3 @@ $username = 'Константин';
 //
 $content = include_template('main.php',['projects' => $projects, 'task_list'=> $task_list, 'show_complete_tasks' => $show_complete_tasks]);
 echo include_template('layout.php', ['title' => 'Дела в порядке', 'content' => $content]);
-
