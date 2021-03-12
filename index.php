@@ -1,7 +1,6 @@
 <?php
 
 require_once('functions.php');
-require_once('date.php');
 include('helpers.php');
 
 // показывать или нет выполненные задачи
@@ -26,7 +25,7 @@ $task_list = [
     ],
     [
         'task' => 'Сделать задание первого раздела',
-        'date' => '21.04.2021',
+        'date' => '21.04.2020',
         'category' => 'Учеба',
         'completed' => true
     ],
