@@ -9,9 +9,6 @@ $title = 'Дела в порядке';
 
 $user_id = '1';
 
-// Пользователь
-$username = 'Константин';
-
 //получить список проектов и задач
 $projects = get_fetch_all($dbconnect, "SELECT * FROM projects where user_id = '$user_id'");
 $tasks = get_fetch_all($dbconnect, "SELECT * FROM tasks where user_id = '$user_id'");
