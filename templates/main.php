@@ -5,8 +5,9 @@
         <ul class="main-navigation__list">
             <?php foreach ($projects as $project) : ?>
                 <li class="main-navigation__list-item">
-                    <a class="main-navigation__list-item-link" href="#"><?= $project['headline_project']; ?></a>
-                    <span class="main-navigation__list-item-count"><?= countTask($tasks, $project['id']) ?></span>
+                    <!-- Выводим проекты -->
+                    <a class="main-navigation__list-item-link <?= $project['id'] == $sort ? 'main-navigation__list-item--active' : '' ?>" href="<?=add_Link($project);?>"><?= $project['headline_project']; ?></a>
+                    <span class="main-navigation__list-item-count"><?= countElements($project, $tasks) ?></span>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -38,7 +39,7 @@
     </div>
 
     <table class="tasks">
-        <?php foreach ($tasks as $task) : ?>
+        <?php foreach ($tasks_sort as $task) : ?>
             <?php if ($task['completed'] && $show_complete_tasks === 0) {
                 continue;
             }

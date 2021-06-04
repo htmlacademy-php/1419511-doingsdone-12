@@ -41,19 +41,20 @@ function countTask(array $tasks, int $project_id) : int {
     return $count;
 }
 
-// возвращает результат запроса с базы
-/**
- * возвращает результат запроса в виде ассоциативного массива
- * @param mysqli $dbconnect параметры соединения
- * @param string $sql_query sql-запрос
- */
-function get_fetch_all($dbconnect, string $sql_query) {
-    $result = mysqli_query($dbconnect, $sql_query);
-
-    if(!$result) {
-        $error = mysqli_error($dbconnect);
-        die('Ошибка MySQL: ' . $error);
-    }
-
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+//Формируем ссылку
+function add_Link($value){
+    $element = '?tab=' . $value['headline_project'] . '&sort=' . $value['user_id'];
+    return $element;
 }
+
+//Подсчет проектов
+function countElements(array $elements, array $values){
+    $intElement = 0;
+    print($values['id']);
+    foreach($values as $value){
+        if($value['project_id'] == $elements['user_id']){
+            $intElement++;
+        }
+    }
+    return $intElement;
+};
