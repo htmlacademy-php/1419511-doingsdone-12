@@ -3,10 +3,17 @@
 
     <nav class="main-navigation">
         <ul class="main-navigation__list">
-            <?php foreach ($projects as $project) : ?>
-                <li class="main-navigation__list-item">
-                    <a class="main-navigation__list-item-link" href="#"><?= $project['headline_project']; ?></a>
-                    <span class="main-navigation__list-item-count"><?= countTask($tasks, $project['id']) ?></span>
+            <?php foreach ($projects as $key => $item) : ?>
+                <li class="main-navigation__list-item
+                            <?= intval($item['id'])   === $project_id &&  is_int($project_id) ? 'main-navigation__list-item--active' : '' ?>
+                            <?= $item['project_name'] === 'Все'       && !is_int($project_id) ? 'main-navigation__list-item--active' : '' ?>"
+                >
+                    <a class="main-navigation__list-item-link"
+                       href="index.php<?= $item['headline_project'] === 'Все' ? '' : '?project_id='.$item['id'] ?>"
+                    >
+                        <?= htmlspecialchars($item['headline_project']); ?>
+                    </a>
+                    <span class="main-navigation__list-item-count"><?= countTask($tasks, $item['headline_project']); ?></span>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -38,29 +45,26 @@
     </div>
 
     <table class="tasks">
-        <?php foreach ($tasks as $task) : ?>
-            <?php if ($task['completed'] && $show_complete_tasks === 0) {
-                continue;
-            }
-            ?>
+        <?php foreach ($tasks as $item) : ?>
             <tr class="tasks__item task
-            <?php if ($task['completed']): ?>task--completed<?php endif; ?>
-
-            <?php if (isset($task['deadline_date']) && countHoursBetweenDates($task['deadline_date']) <= 24 && !$task['completed']): ?>task--important<?php endif; ?>
-            ">
+                                <?= $item['deadline_date'] ? 'task--completed' : '' ?>
+                                <?= !$item['deadline_date'] && task_near_finish($item['create_date']) ? 'task--important' : '' ?>
+                              ">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
-                        <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" checked>
-                        <span class="checkbox__text"><?= htmlspecialchars($task['title']); ?></span>
-
+                        <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1"
+                            <?= $item['deadline_date'] ? 'checked' : '' ?>
+                        >
+                        <span class="checkbox__text"><?= htmlspecialchars($item['title']); ?></span>
                     </label>
                 </td>
 
                 <td class="task__file">
-                    <a class="download-link" href="#">Home.psd</a>
+                    <!-- если имя файла в таблице пустое, то ссылку не выводим -->
+                    <?= $item['file_path'] ? '<a class="download-link" href="#">'.$item['file_path'].'</a>' : '' ?>
                 </td>
 
-                <td class="task__date"><?= htmlspecialchars(eventDateDisplay($task['deadline_date'])); ?></td>
+                <td class="task__date"><?= (htmlspecialchars($item['create_date']) != null) ? htmlspecialchars($item['create_date']) : 'Нет'; ?></td>
             </tr>
         <?php endforeach; ?>
     </table>

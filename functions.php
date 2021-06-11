@@ -3,27 +3,6 @@
 date_default_timezone_set('Europe/Moscow');
 setlocale(LC_ALL, 'ru_RU');
 
-/**
- * Считаем время до завершения
- * @param string $date Строка с датой
- *
- * @return float $date_diff Возвращаем дни
- */
-function countHoursBetweenDates($date){
-    $ts = time(); // дата сегодняшнего дня
-    $end_ts = date("Y-m-d", strtotime($date));// дата события
-    $date_diff = floor(($end_ts - $ts) / 3600);
-    return $date_diff;
-};
-
-function eventDateDisplay($date){
-    $end_ts = date("Y-m-d", strtotime($date));// дата события
-    if ($end_ts == "1970-01-01") {
-        $end_ts = "No date...";
-    }
-    return $end_ts;
-};
-
 // функция подсчета задач
 /**
  * Подсчёт количества задач в каждом из проектов
@@ -31,29 +10,29 @@ function eventDateDisplay($date){
  * @param int $project_id id проекта
  * @return int $count число задач для переданного проекта
  */
-function countTask(array $tasks, int $project_id) : int {
-    $count = 0;
-    foreach ( $tasks as $task ) {
-        if (strval( $task['project_id'] === $project_id)) {
-            ++$count;
+
+function countTask($task_array, $headline_project) {
+    if ($headline_project=== 'Все') {
+        return count($task_array);
+    } else {
+        $count = 0;
+        foreach ($task_array as $item) {
+            if ($item['headline_project'] === $headline_project) {
+                $count += 1;
+            }
         }
+        return $count;
     }
-    return $count;
 }
 
-// возвращает результат запроса с базы
-/**
- * возвращает результат запроса в виде ассоциативного массива
- * @param mysqli $dbconnect параметры соединения
- * @param string $sql_query sql-запрос
- */
-function get_fetch_all($dbconnect, string $sql_query) {
-    $result = mysqli_query($dbconnect, $sql_query);
 
-    if(!$result) {
-        $error = mysqli_error($dbconnect);
-        die('Ошибка MySQL: ' . $error);
+// функция для определения задач, у которых <24 часа до завершения
+function task_near_finish($task_completion_date) {
+    if ($task_completion_date != null) {
+        $hours_to_finish = floor((strtotime($task_completion_date.' 00:00') - time())/3600);
+        if ($hours_to_finish < 24) {
+            return true;
+        }
     }
-
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return false;
 }
