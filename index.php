@@ -2,44 +2,68 @@
 
 require_once('functions.php');
 include('helpers.php');
-$user = 4;
 
+// выбор пользователя
+$user_id = 1;
+
+// подключение к БД
 $dbconnect = mysqli_connect("127.0.0.1:3306", "root", "root", "doingsdone");
 if ($dbconnect == false){
     print('Ошибка подключения: ' . mysqli_connect_error());
 }
 
-$sql = "SELECT id, headline_project, projects.user_id FROM projects";
+// проверка на существование параметра запроса с идентификатором проекта
+// если параметр присутствует, то показываем только те задачи, что относятся к этому проекту
+$project_id = isset($_GET['project_id']);
+
+// если подключение успешно делаем выборки, нет - выводим ошибку
+if ($dbconnect === false) {
+    http_response_code(503);
+    print(render_template('templates/error.php'));
+    exit();
+} else {
+// указание, какую кодировку использовать
+mysqli_set_charset($dbconnect, "utf8");
+
+// выборка списка(массива) всех проектов текущего пользователя
+$sql = "SELECT id, headline_project FROM projects WHERE user_id = " . $user_id;
 $result = mysqli_query($dbconnect, $sql);
-
-if($result){
-    $projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
+if (!$result) {
+    http_response_code(503);
+    print(render_template('templates/error.php'));
+    exit();
 }
+$projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-$sql = "SELECT title, user_id, project_id, deadline_date FROM tasks WHERE tasks.user_id = " . $user;
+// выборка списка(массива) задач текущего пользователя с условиями (для выбранного проекта)
+// если проект не указан, то выводим все задачи пользователя
+// если указан, то выводим задачи только для выбранного проекта
+$sql =  "SELECT t.title, t.file_path, date_format(t.create_date, '%d.%m.%Y') AS create_date, p.id, p.headline_project, t.deadline_date"
+    ."  FROM tasks t JOIN projects p ON t.project_id = p.id where t.user_id = " . $user_id
+    . (is_int($project_id) ? " and project_id = " . $project_id : "");
 $result = mysqli_query($dbconnect, $sql);
-if($result){
-    $tasks = mysqli_fetch_all($result, MYSQLI_ASSOC);
+if (!$result) {
+    http_response_code(503);
+    print(render_template('templates/error.php'));
+    exit();
 }
+$tasks_cond = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-$sort = filter_input(INPUT_GET, 'sort');
-if($sort){
-    $sql = "SELECT title, project_id, deadline_date, tasks.user_id, projects.id FROM tasks
-    JOIN projects WHERE tasks.user_id =" . $user ." && projects.id =" . $sort . " && project_id=" . $sort;
+// выборка списка(массива) всех задач текущего пользователя
+    $sql =  "SELECT t.title, t.file_path, date_format(t.create_date, '%d.%m.%Y') AS create_date, p.id, p.headline_project, t.deadline_date"
+        ."  FROM tasks t JOIN projects p ON t.project_id = p.id where t.user_id = " . $user_id;
     $result = mysqli_query($dbconnect, $sql);
-
-    $tasks_sort = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    if(!$tasks_sort){
-        http_response_code(404);
+    if (!$result) {
+        http_response_code(503);
+        print(render_template('templates/error.php'));
+        exit();
     }
-
-}
-else {
-    $tasks_sort = $tasks;
+    $tasks_all = mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-$page_content = include_template('main.php', ['projects' => $projects, 'tasks' => $tasks, 'tasks_sort' => $tasks_sort, 'sort' => $sort, 'show_complete_tasks' => $show_complete_tasks]);
-$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => 'Дела в порядке']);
+
+$page_content = include_template('main.php', ['projects' => $projects, 'tasks' => $tasks_cond]);
+$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => 'Дела в порядке','projects' => $projects, 'tasks' => $tasks_all]);
 
 print($layout_content);
 
